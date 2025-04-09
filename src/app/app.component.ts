@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { WeatherWidgetComponent } from './weather-widget.component';
 import { VelocityWidgetComponent } from './velocity-widget.component';
+import { Exporter } from './exporter';
+import { YamlExporterService } from './yaml-exporter.service';
 
 /*
 Single-Responsibility: It is responsible for rendering the main layout
@@ -15,8 +17,8 @@ D:
   imports: [WeatherWidgetComponent, VelocityWidgetComponent],
   template: `
     <main class="content">
-       <weather-widget/>
-       <velocity-widget/>
+      <weather-widget [data]="{ temperature: 75 }" />
+      <velocity-widget [data]="{ planned: 25, achieved: 20 }" />
     </main>
   `,
   styles: [
@@ -32,6 +34,6 @@ D:
       }
     `,
   ],
+  providers: [{ provide: Exporter, useClass: YamlExporterService }],
 })
-export class AppComponent {
-}
+export class AppComponent {}

@@ -1,6 +1,8 @@
-import { JsonExporterService } from './json-exporter.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
+import { Exporter } from './exporter';
+import { BaseWidget } from './widget';
+import { MatButton } from '@angular/material/button';
 
 /*
 Single-Responsibility: 
@@ -8,18 +10,19 @@ Single-Responsibility:
 Open/Closed: 
   Open for extension by allowing different content to be passed via `<ng-content>` 
   Closed for modification as its structure and behavior do not need to change when new widgets are added.
-L:
+L: Liskov Substitution Principle
+  By implelmenting BaseWidget we ensure this "widget" can be used interchangeably with other widgets.
 I:
 D: 
 */
 
 @Component({
   selector: 'widget',
-  imports: [MatDivider],
+  imports: [MatDivider, MatButton],
   template: `
     <div class="header">
       <h1>{{ title }}</h1>
-      <button mat-stroked-button (click)="onExportJson()">
+      <button mat-stroked-button (click)="onExport()">
         Export as JSON
       </button>
     </div>
@@ -45,12 +48,13 @@ D:
     `,
   ],
 })
-export class WidgetComponent {
+export class WidgetComponent implements BaseWidget {
   @Input({ required: true }) public title!: string;
+  @Input({ required: true }) public data!: any;
 
-  constructor(private jsonExporter: JsonExporterService) {}
+  constructor(private exporter: Exporter) {}
 
-  onExportJson() {
-    this.jsonExporter.export();
+  onExport() {
+    this.exporter.export(this.data);
   }
 }

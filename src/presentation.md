@@ -10,7 +10,8 @@ The app we are going to be building displays a series of widgets. As the require
 
 ### Requirements 
 - ~~Display a weather widget than can export its data to json~~
-- Display **different** types of widgets (Velocity and Weather) that can export their data to json
+- ~~Display **different** types of widgets (Velocity and Weather) that can export their data to json~~
+- Display **different** types of widgets (Velocity and Weather) that can export their data to json OR yaml
 
 
 ## S.O.L.I.D. Principles
@@ -51,3 +52,21 @@ The Open/Closed Principle states that software entities (classes, modules, funct
   - In this case, by using `<ng-content></ng-content>` in our `WidgetComponent` we're able to expand our Widget's functionality without changing the `WidgetComponent` as seen in `VelocityWidget` and `WeatherWidget`. We could create any amount of widgets and the `WidgetComponent` would stay closed.
 
 By adhering to OCP, you ensure that your codebase is easier to maintain, extend, and scale over time.
+
+### L: Liskov Substitution Principle
+The Liskov Substitution Principle states that objects of a superclass should be replaceable with objects of a subclass without altering the correctness of the program.
+- **Credit**: Barbara Liskov, 1987, Turing Award–winning computer scientist
+- **Definition**: Subtypes must be substitutable for their base types. This ensures that derived classes extend the behavior of the base class without changing its expected functionality.
+- **Why It Matters**:
+  - Promotes reusability by ensuring that derived classes can be used interchangeably with their base class.
+  - Prevents unexpected behavior when replacing one implementation with another.
+  - Encourages adherence to contracts defined by interfaces or base classes.
+  - LSP is less about syntax and more about semantics — “Don’t surprise the caller.”
+  - A `Square` should not be a subclass of `Rectangle` if changing its width also changes its height, violating expected behavior.
+
+- **Example**:
+  - In our case we use the `BaseWidget` interface to enforce Widgets have `title` and `data`. Therefore, any widget (e.g., `WeatherWidget`, `VelocityWidget`) implementing `BaseWidget` can expected to support those fields without breaking our app.
+  - Similarly, we use the `Exporter` interface to enforce that any Exporter implementing it has an `export` method, allowing us to use
+  `JsonExporterService` and `YamlExporterService` interchangably.
+
+By adhering to LSP, you ensure that your code remains flexible, predictable, and easy to extend.
