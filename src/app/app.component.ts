@@ -1,31 +1,21 @@
 import { Component } from '@angular/core';
-import { MatToolbar } from '@angular/material/toolbar';
-import { MatDivider } from '@angular/material/divider';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
+import { WidgetComponent } from './widget.component';
+
+
+/*
+Single-Responsibility: It is responsible for rendering the main layout
+O:
+L:
+I:
+D: 
+*/
 
 @Component({
   selector: 'app-root',
-  imports: [MatToolbar, MatDivider, MatIcon, MatButton],
+  imports: [WidgetComponent],
   template: `
-    <mat-toolbar color="primary">
-      <span>My App</span>
-    </mat-toolbar>
     <main class="content">
-      <div class="widget">
-        <div class="header">
-          <h1>Weather</h1>
-          <button mat-stroked-button (click)="onExportJson()">
-            Export as JSON
-          </button>
-        </div>
-        <mat-divider></mat-divider>
-        <h5>Currently</h5>
-        <section class="weather-widget">
-          <mat-icon class="widget-icon">wb_sunny</mat-icon>
-          <div class="value">+25</div>
-        </section>
-      </div>
+      <widget></widget>
     </main>
   `,
   styles: [
@@ -73,15 +63,4 @@ import { MatButton } from '@angular/material/button';
   ],
 })
 export class AppComponent {
-  title = 'cb_solid_principles';
-  onExportJson() {
-    let data = JSON.stringify({ weather: { is_sunny: true, temp: '+25' } });
-    let dataUri =
-      'data:application/json;charset=utf-8,' + encodeURIComponent(data);
-    let exportFileName = 'weather.json';
-    let linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileName);
-    linkElement.click();
-  }
 }

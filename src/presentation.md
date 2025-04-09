@@ -20,4 +20,18 @@ SOLID represents a set of object-oriented design principles designed by Robert C
 
 (I wrongly assumed this was a Gang of Four (Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides) concept Design Patterns: Elements of Reusable Object-Oriented Software, 1994, if you havent read that you should give it a look.)
 
+### S: Single Responsibility Principle
+The Single Responsibility Principle states that a class, module, or function should have only one reason to change. 
+- **Credit**: Coined by Uncle Bob himself.
+- **Definition**: Each component or class should focus on a single responsibility or functionality.
+- **Why It Matters**:
+  - Improves maintainability by isolating changes to specific parts of the code.
+  - Reduces the risk of introducing bugs when modifying functionality.
+  - Makes the code easier to understand and test.
+- **Example**:
+  - A class responsible for formatting data should not also handle saving it to a database.
+  - In our case, we've created a `WidgetComponent` & `JsonExporterService` to seperate the responsibily of displaying Widget data from the main app layout, and the logic for exporting to a dedicated class. 
+- **Things to look for**: 
+  - Ask yourself "what does this component or service do?" if you need to use the word "AND" to descibe it, then you may want to consider breaking that component down.
 
+By adhering to SRP, you ensure that your codebase remains modular, easier to extend, and less prone to errors.
