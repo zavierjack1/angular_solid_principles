@@ -1,13 +1,13 @@
 import { JsonExporterService } from './json-exporter.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
 
 /*
-Single-Responsibility: Displays widget information and provides a button to export the data as JSON
-
-O:
+Single-Responsibility: 
+  Displays weather information and provides a button to export the data as JSON
+Open/Closed: 
+  Open for extension by allowing different content to be passed via `<ng-content>` 
+  Closed for modification as its structure and behavior do not need to change when new widgets are added.
 L:
 I:
 D: 
@@ -15,20 +15,16 @@ D:
 
 @Component({
   selector: 'widget',
-  imports: [MatDivider, MatIcon, MatButton],
+  imports: [MatDivider],
   template: `
     <div class="header">
-      <h1>Weather</h1>
+      <h1>{{ title }}</h1>
       <button mat-stroked-button (click)="onExportJson()">
         Export as JSON
       </button>
     </div>
     <mat-divider></mat-divider>
-    <h5>Currently</h5>
-    <section class="wether-widget">
-      <mat-icon class="widget-icon">wb_sunny</mat-icon>
-      <div class="value">+25</div>
-    </section>
+    <ng-content></ng-content>
   `,
   styles: [
     `
@@ -41,31 +37,17 @@ D:
         width: 400px;
         margin-left: 20px;
       }
-      .wether-widget {
-        display: block;
-        text-align: center;
-        position: relative;
-        min-width: 190px;
-      }
       .header {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      .widget-icon {
-        font-size: 64px;
-        width: 64px;
-        height: 64px;
-        color: orange;
-      }
-      .value {
-        font-size: 24px;
-        opacity: 0.7;
-      }
     `,
   ],
 })
 export class WidgetComponent {
+  @Input({ required: true }) public title!: string;
+
   constructor(private jsonExporter: JsonExporterService) {}
 
   onExportJson() {

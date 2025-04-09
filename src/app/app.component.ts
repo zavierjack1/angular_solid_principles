@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { WidgetComponent } from './widget.component';
-
+import { WeatherWidgetComponent } from './weather-widget.component';
+import { VelocityWidgetComponent } from './velocity-widget.component';
 
 /*
 Single-Responsibility: It is responsible for rendering the main layout
@@ -12,44 +12,15 @@ D:
 
 @Component({
   selector: 'app-root',
-  imports: [WidgetComponent],
+  imports: [WeatherWidgetComponent, VelocityWidgetComponent],
   template: `
     <main class="content">
-      <widget></widget>
+       <weather-widget/>
+       <velocity-widget/>
     </main>
   `,
   styles: [
     `
-      .widget {
-        display: block;
-        border: #f0ebeb solid 1px;
-        border-radius: 5px;
-        padding: 15px;
-        background-color: #fafafa;
-        width: 400px;
-        margin-left: 20px;
-      }
-      .weather-widget {
-        display: block;
-        text-align: center;
-        position: relative;
-        min-width: 190px;
-      }
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .widget-icon {
-        font-size: 64px;
-        width: 64px;
-        height: 64px;
-        color: orange;
-      }
-      .value {
-        font-size: 24px;
-        opacity: 0.7;
-      }
       .content {
         background-color: #fff;
         padding: 2rem;

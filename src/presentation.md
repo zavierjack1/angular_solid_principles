@@ -9,7 +9,9 @@ By using an interactive rebase we'll be going step by step through the S.O.L.I.D
 The app we are going to be building displays a series of widgets. As the requirements change we'll see how using a more SOLID approach makes our code more manageable. 
 
 ### Requirements 
-- Display a weather widget than can export its data to json
+- ~~Display a weather widget than can export its data to json~~
+- Display **different** types of widgets (Velocity and Weather) that can export their data to json
+
 
 ## S.O.L.I.D. Principles
 SOLID represents a set of object-oriented design principles designed by Robert C. Martin (also known as Uncle Bob) in the early 2000's aimed at helping developers create code that is:
@@ -35,3 +37,17 @@ The Single Responsibility Principle states that a class, module, or function sho
   - Ask yourself "what does this component or service do?" if you need to use the word "AND" to descibe it, then you may want to consider breaking that component down.
 
 By adhering to SRP, you ensure that your codebase remains modular, easier to extend, and less prone to errors.
+
+### O: Open/Closed Principle
+The Open/Closed Principle states that software entities (classes, modules, functions) should be **open for extension** but **closed for modification**.
+- **Credit**: Coined by Bertrand Meyer in 1988
+- **Definition**: You should be able to add new functionality to a class or module without modifying its existing code.
+- **Why It Matters**:
+  - Reduces the risk of breaking existing functionality when adding new features.
+  - Encourages the use of abstractions, making the code more flexible and reusable.
+  - Improves scalability by allowing new behavior to be added without altering the core logic.
+- **Example**:
+  - Libraries are a good example of the open/closed principle. As consumers we usually can not edit the code of an external library, so the functionality provided by the library needs to be open to expansion but is inherently closed to modification. 
+  - In this case, by using `<ng-content></ng-content>` in our `WidgetComponent` we're able to expand our Widget's functionality without changing the `WidgetComponent` as seen in `VelocityWidget` and `WeatherWidget`. We could create any amount of widgets and the `WidgetComponent` would stay closed.
+
+By adhering to OCP, you ensure that your codebase is easier to maintain, extend, and scale over time.
