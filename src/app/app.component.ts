@@ -1,12 +1,86 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [MatToolbar, MatDivider, MatIcon, MatButton],
+  template: `
+    <mat-toolbar color="primary">
+      <span>My App</span>
+    </mat-toolbar>
+    <main class="content">
+      <div class="widget">
+        <div class="header">
+          <h1>Weather</h1>
+          <button mat-stroked-button (click)="onExportJson()">
+            Export as JSON
+          </button>
+        </div>
+        <mat-divider></mat-divider>
+        <h5>Currently</h5>
+        <section class="weather-widget">
+          <mat-icon class="widget-icon">wb_sunny</mat-icon>
+          <div class="value">+25</div>
+        </section>
+      </div>
+    </main>
+  `,
+  styles: [
+    `
+      .widget {
+        display: block;
+        border: #f0ebeb solid 1px;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #fafafa;
+        width: 400px;
+        margin-left: 20px;
+      }
+      .weather-widget {
+        display: block;
+        text-align: center;
+        position: relative;
+        min-width: 190px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .widget-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: orange;
+      }
+      .value {
+        font-size: 24px;
+        opacity: 0.7;
+      }
+      .content {
+        background-color: #fff;
+        padding: 2rem;
+        height: calc(100vh - 64px);
+        display: flex;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+      }
+    `,
+  ],
 })
 export class AppComponent {
   title = 'cb_solid_principles';
+  onExportJson() {
+    let data = JSON.stringify({ weather: { is_sunny: true, temp: '+25' } });
+    let dataUri =
+      'data:application/json;charset=utf-8,' + encodeURIComponent(data);
+    let exportFileName = 'weather.json';
+    let linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileName);
+    linkElement.click();
+  }
 }
