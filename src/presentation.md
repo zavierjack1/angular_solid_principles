@@ -11,8 +11,10 @@ The app we are going to be building displays a series of widgets. As the require
 ### Requirements 
 - ~~Display a weather widget than can export its data to json~~
 - ~~Display **different** types of widgets (Velocity and Weather) that can export their data to json~~
-- Display **different** types of widgets (Velocity and Weather) that can export their data to json OR yaml
-
+- ~~Display **different** types of widgets (Velocity and Weather) that can export their data to json OR yaml~~
+- Display different types of widgets that can: 
+  - that can export their data to json OR yaml
+  - potentially be "reloaded"
 
 ## S.O.L.I.D. Principles
 SOLID represents a set of object-oriented design principles designed by Robert C. Martin (also known as Uncle Bob) in the early 2000's aimed at helping developers create code that is:
@@ -70,3 +72,20 @@ The Liskov Substitution Principle states that objects of a superclass should be 
   `JsonExporterService` and `YamlExporterService` interchangably.
 
 By adhering to LSP, you ensure that your code remains flexible, predictable, and easy to extend.
+
+### I: Interface Segregation Principle
+The Interface Segregation Principle states that no client should be forced to depend on methods it does not use.
+- **Credit**: Another Uncle Bob original.
+- **Definition**: Interfaces should be small and focused, containing only the methods that are relevant to the specific client.
+- **Why It Matters**:
+  - Prevents "fat interfaces" that force classes to implement unnecessary methods.
+  - Improves flexibility by allowing clients to depend only on the functionality they need.
+  - Makes the code easier to maintain and extend by reducing coupling.
+
+- **Example**:
+  - Instead of having a single `Widget` interface with methods like `reload()` and `export()`, split it into smaller, focused interfaces:
+    - `BaseWidget` for core widget properties like `title` and `data`.
+    - `Reloadable` for widgets that support reloading functionality.
+  - This ensures that widgets like `WeatherWidget` implement only the `Reloadable` interface, while `VelocityWidget` avoids unnecessary dependencies.
+
+By adhering to ISP, you ensure that your code remains modular, focused, and easier to work with.

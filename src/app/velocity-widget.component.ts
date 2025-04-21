@@ -9,7 +9,8 @@ Single-Responsibility:
 O:
 L: Liskov Substitution Principle
   By implelmenting BaseWidget we ensure this "widget" can be used interchangeably with other widgets.
-I:
+Interface Segregation: 
+  Does not implement `Reloadable` because it does not require reloading functionality, adhering to separation of concerns.
 D: 
 */
 

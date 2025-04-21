@@ -12,7 +12,8 @@ Open/Closed:
   Closed for modification as its structure and behavior do not need to change when new widgets are added.
 L: Liskov Substitution Principle
   By implelmenting BaseWidget we ensure this "widget" can be used interchangeably with other widgets.
-I:
+Interface Segregation: 
+  Does not enforce unnecessary methods on child components, allowing them to implement only the interfaces they need.
 D: 
 */
 
