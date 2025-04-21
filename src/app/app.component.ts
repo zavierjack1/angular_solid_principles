@@ -3,6 +3,7 @@ import { WeatherWidgetComponent } from './weather-widget.component';
 import { VelocityWidgetComponent } from './velocity-widget.component';
 import { Exporter } from './exporter';
 import { YamlExporterService } from './yaml-exporter.service';
+import { WidgetBoardComponent } from './widget-board.component';
 
 /*
 Single-Responsibility: It is responsible for rendering the main layout
@@ -14,11 +15,17 @@ D:
 
 @Component({
   selector: 'app-root',
-  imports: [WeatherWidgetComponent, VelocityWidgetComponent],
+  imports: [
+    WeatherWidgetComponent,
+    VelocityWidgetComponent,
+    WidgetBoardComponent,
+  ],
   template: `
     <main class="content">
-      <weather-widget [data]="{ temperature: 75 }" />
-      <velocity-widget [data]="{ planned: 25, achieved: 20 }" />
+      <widget-board>
+        <weather-widget [data]="{ temperature: 75 }" />
+        <velocity-widget [data]="{ planned: 25, achieved: 20 }" />
+      </widget-board>
     </main>
   `,
   styles: [

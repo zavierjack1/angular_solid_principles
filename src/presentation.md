@@ -15,6 +15,7 @@ The app we are going to be building displays a series of widgets. As the require
 - Display different types of widgets that can: 
   - that can export their data to json OR yaml
   - potentially be "reloaded"
+  - reloadable widgets should be refreshed on page load
 
 ## S.O.L.I.D. Principles
 SOLID represents a set of object-oriented design principles designed by Robert C. Martin (also known as Uncle Bob) in the early 2000's aimed at helping developers create code that is:
@@ -89,3 +90,133 @@ The Interface Segregation Principle states that no client should be forced to de
   - This ensures that widgets like `WeatherWidget` implement only the `Reloadable` interface, while `VelocityWidget` avoids unnecessary dependencies.
 
 By adhering to ISP, you ensure that your code remains modular, focused, and easier to work with.
+
+### D: Dependency Inversion Principle
+The Dependency Inversion Principle states that high-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+- **Definition**: 
+  - High-level modules (e.g., business logic) should not depend on low-level modules (e.g., utility classes or services). 
+  - Instead, both should depend on abstractions (e.g., interfaces or abstract classes).
+
+- **Why It Matters**:
+  - Decouples high-level logic from low-level implementations, making the code more flexible and easier to extend.
+  - Allows swapping out implementations (e.g., replacing a service) without modifying the dependent code.
+  - Encourages the use of dependency injection, improving testability.
+
+- **Examples**:
+  1. **Exporter Abstraction**:
+     - **High-Level Module**: Components like `WidgetComponent` depend on the `Exporter` abstraction rather than a specific implementation (e.g., `JsonExporterService` or `YamlExporterService`). This ensures that the export functionality can be swapped or extended without modifying the `WidgetComponent`.
+     - **Low-Level Modules**: Services like `JsonExporterService` and `YamlExporterService` implement the `Exporter` abstraction, ensuring they are decoupled from the components that use them. These services depend on the `Exporter` interface, not on the components.
+
+     ```typescript
+     export interface Exporter {
+       export(data: any): void;
+     }
+
+     export class JsonExporterService implements Exporter {
+       export(data: any): void {
+         console.log('Exporting data as JSON:', JSON.stringify(data));
+       }
+     }
+
+     export class WidgetComponent {
+       constructor(private exporter: Exporter) {}
+
+       exportData(data: any): void {
+         this.exporter.export(data); // Depends on abstraction
+       }
+     }
+     ```
+
+  2. **Reloadable Widget Abstraction**:
+     - **High-Level Module**: The `WidgetBoardComponent` depends on the `Reloadable` abstraction (via the `RELOADABLE_WIDGET` token) rather than specific widget implementations like `WeatherWidget` or `VelocityWidget`. This allows any widget that implements `Reloadable` to be used without modifying the `WidgetBoardComponent`.
+     - **Low-Level Modules**: Widgets like `WeatherWidget` and `VelocityWidget` implement the `Reloadable` abstraction and provide themselves via the `RELOADABLE_WIDGET` token. This ensures they are decoupled from the `WidgetBoardComponent`.
+
+     ```typescript
+     export interface Reloadable {
+       reload(): void;
+     }
+
+     export const RELOADABLE_WIDGET = new InjectionToken<Reloadable>('ReloadableWidget');
+
+     @Component({
+       selector: 'widget-board',
+       template: `<div><ng-content></ng-content></div>`,
+     })
+     export class WidgetBoardComponent {
+       @ContentChildren(RELOADABLE_WIDGET) reloadableWidgets!: QueryList<Reloadable>;
+
+        /**
+         * Load the content of any reloadable widget after the view has been initialized
+        */
+        ngAfterViewInit(): void {
+            this.reloadableWidgets.forEach((widget) => widget.reload());
+        }
+     }
+
+     @Component({
+       selector: 'weather-widget',
+       providers: [{ provide: RELOADABLE_WIDGET, useExisting: WeatherWidgetComponent }],
+     })
+     export class WeatherWidgetComponent implements Reloadable {
+       reload(): void {
+         console.log('Reloading Weather Widget...');
+       }
+     }
+     ```
+  3. **Unit Testing**:
+     - **Isolation**: The `WidgetComponent` is tested independently of the actual `JsonExporterService` or `YamlExporterService`.
+    The mock `Exporter` ensures the test focuses solely on the behavior of the `WidgetComponent`.
+     - **Flexibility**: You can easily swap out the mock implementation for another one if needed, without modifying the test or the component.
+     - **No External Dependencies**: The test does not rely on the actual implementation of the Exporter, making it faster and more reliable.
+
+        ```typescript
+        // Mock Exporter for Testing
+        class MockExporter implements Exporter {
+            export(data: any): void {
+                console.log('Mock Exporter called with data:', data);
+            }
+        }
+
+        describe('WidgetComponent', () => {
+            let component: WidgetComponent;
+            let fixture: any;
+            let mockExporter: MockExporter;
+
+            beforeEach(() => {
+                TestBed.configureTestingModule({
+                imports: [WidgetComponent], // Include the standalone component
+                providers: [{ provide: Exporter, useClass: MockExporter }], // Provide the mock
+                });
+
+                fixture = TestBed.createComponent(WidgetComponent);
+                component = fixture.componentInstance;
+                mockExporter = TestBed.inject(Exporter); // Inject the mock
+            });
+
+            it('should call export on the provided Exporter', () => {
+                const mockData = { key: 'value' };
+                component.data = mockData; // Set the data input
+
+                const exporterSpy = spyOn(mockExporter, 'export'); // Spy on the mock's export method
+
+                component.onExport(); // Call the method
+
+                expect(exporterSpy).toHaveBeenCalledWith(mockData); // Verify the interaction
+            });
+        });
+        ```
+
+By adhering to DIP:
+- High-level modules (`WidgetComponent`, `WidgetBoardComponent`) depend on abstractions (`Exporter`, `Reloadable`) rather than concrete implementations.
+- Low-level modules (`JsonExporterService`, `WeatherWidgetComponent`) implement these abstractions, ensuring flexibility and decoupling.
+
+**Relationship betwen Liskov Subsitution and Dependency Inversion:**
+- **LSP** ensures that abstractions (e.g., interfaces) are implemented correctly by their subtypes, so substituting one implementation for another does not break the program. This guarantees that all implementations behave consistently and adhere to the expected contract.
+  - Focuses on low-level modules depending on abstractions
+- **DIP** ensures that high-level modules depend on those abstractions, not on specific implementations, enabling flexibility and decoupling. By relying on abstractions, high-level modules can seamlessly work with any implementation that satisfies the abstraction.
+  - Focuses on ensuring that high-level modules depend on abstractions, allowing them to work with any valid implementation.
+
+Together, they create a system where:
+1. High-level modules are decoupled from low-level implementations (DIP).
+2. Low-level implementations can be substituted without breaking the system (LSP).

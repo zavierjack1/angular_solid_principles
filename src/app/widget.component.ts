@@ -55,7 +55,7 @@ export class WidgetComponent implements BaseWidget {
 
   constructor(private exporter: Exporter) {}
 
-  onExport() {
+  public onExport() {
     this.exporter.export(this.data);
   }
 }
